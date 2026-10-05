@@ -48,6 +48,19 @@ function App() {
     .catch((error) => console.log(error));
   };
 
+  const handleDelete = (id) => {
+    console.log(id);
+    fetch(`http://localhost:5000/api/cars/${id}`, {
+      method: "DELETE",
+    })
+    .then((res) => res.json())
+    .then(() => {
+      setCars(cars.filter((car) => car._id !== id));
+    })
+    .catch((error) => console.log(error));
+
+    };
+
 
 
   return (
@@ -67,7 +80,7 @@ function App() {
         <a href="#">užklausos</a>
       </nav>
 
-      <div className="loyaut">
+      <div className="loyout">
         <aside className="sidebar">
           <h2>Informacija</h2>
           <p>valdyti automobiliu užklausas</p>
@@ -76,7 +89,7 @@ function App() {
         <main className="content">
           <h2>Automobliai</h2>
 
-          <form className="carform" onSubmit={handleSubmit}>
+          <form className="car-form" onSubmit={handleSubmit}>
             <h3>Pridėti Automobilį</h3>
             <input
             name="brand"
@@ -123,6 +136,7 @@ function App() {
                 <b>Kaina :</b> {car.price}
                 </p>
               <button>Pažiūrėti</button>
+              <button onClick={() => handleDelete(car._id)}> Ištrinti</button>
             </div>
             ))}
           </div>

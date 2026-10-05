@@ -133,10 +133,15 @@ button:hover {
   padding-bottom: 8px;
 }
 
-car-form input {
+.car-form input {
   display: block;
   width: 250px;
   padding: 8px;
   margin-bottom: 10px;
   border: 1px solid #999;
+}
+
+.car-card button {
+  margin-top: 5px;
+  margin-right: 8px;
 }
