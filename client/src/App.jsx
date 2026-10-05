@@ -3,6 +3,13 @@ import "./App.css";
 
 function App() {
   const [cars, setCars] = useState([]);
+ 
+  const [formData, setFormData] = useState({
+    brand: "",
+    model: "",
+    year: "",
+    price: "",
+  });
 
   useEffect(() => {
     fetch("http://localhost:5000/api/cars")
@@ -10,6 +17,37 @@ function App() {
       .then((data) => setCars(data))
       .catch((error) => console.error(error));
   }, []);
+
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    fetch("http://localhost:5000/api/cars", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+    .then((res) => res.json())
+    .then((newCar) => {
+      setCars([...cars, newCar]);
+      setFormData({
+        brand: "",
+        model: "",
+        year: "",
+        price: "",
+      });
+    })
+    .catch((error) => console.log(error));
+  };
+
 
 
   return (
@@ -38,11 +76,43 @@ function App() {
         <main className="content">
           <h2>Automobliai</h2>
 
+          <form className="carform" onSubmit={handleSubmit}>
+            <h3>Pridėti Automobilį</h3>
+            <input
+            name="brand"
+            placeholder="Markė"
+            value={formData.brand}
+            onChange={handleChange}
+            />
+            <input
+            name="model"
+            placeholder="Modelis"
+            value={formData.model}
+            onChange={handleChange}
+            />
+            <input
+            name="year"
+            placeholder="Metai"
+            value={formData.year}
+            onChange={handleChange}
+            />
+            <input
+            name="price"
+            placeholder="Kaina"
+            value={formData.price}
+            onChange={handleChange}
+            />
+            <button type="submit">Pridėti</button>
+            
+
+        
+          </form>
+
           <div className="car-grid">
             {cars.length === 0 && <p>Automobilių nėra.</p>}
 
             {cars.map((car) => (
-            <div className="car-card" key={car.id}>
+            <div className="car-card" key={car._id}>
               <h3>
                  {car.brand} {car.model}
                  </h3>
