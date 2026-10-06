@@ -3,6 +3,7 @@ import "./App.css";
 
 function App() {
   const [cars, setCars] = useState([]);
+  const [editingId, sertEditingId] = useState(null);
  
   const [formData, setFormData] = useState({
     brand: "",
@@ -28,16 +29,29 @@ function App() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    fetch("http://localhost:5000/api/cars", {
-      method: "POST",
+    let url = "http://localhost:5000/api/cars";
+    let method = "POST";
+
+    if (editingId) {
+      url = `http://localhost:5000/api/cars/${editingId}`;
+      method = "PUT";
+    }
+
+    fetch(url, {
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     })
     .then((res) => res.json())
-    .then((newCar) => {
-      setCars([...cars, newCar]);
+    .then((savedCar) => {
+      if (editingId) {
+        setCars(cars.map((car) => (car._id === editingId ? savedCar : car)));
+      } else {
+        setCars([...cars, savedCar]);
+      }
+      
       setFormData({
         brand: "",
         model: "",
@@ -59,6 +73,17 @@ function App() {
     })
     .catch((error) => console.log(error));
 
+    };
+
+
+    const handleEdit = (car) => {
+      sertEditingId(car._id);
+      setFormData({
+        brand: car.brand,
+        model: car.model,
+        year: car.year,
+        price: car.price,
+      });
     };
 
 
@@ -136,6 +161,7 @@ function App() {
                 <b>Kaina :</b> {car.price}
                 </p>
               <button>Pažiūrėti</button>
+              <button onClick={() => handleEdit(car)}>Redaguoti</button>
               <button onClick={() => handleDelete(car._id)}> Ištrinti</button>
             </div>
             ))}
