@@ -1,11 +1,24 @@
+import audiImage from "../pictures/Audi.jpg";
+import bmwImage from "../pictures/BMW.jpg";
+import mercedesImage from "../pictures/Mercedes-Benz.jpg";
+
+
+
 function CarCard({car, onEdit, onDelete}) {
+    const Images = {
+  Audi: audiImage,
+  BMW: bmwImage,
+  "Mercedes-Benz": mercedesImage,};
+
+    const carImage = Images[car.imageUrl];
+    
     return (
         <div className="car-card">
               <h3>
                  {car.brand} {car.model}
                  </h3>
-                 {car.imageUrl && (
-                        <img src={car.imageUrl} alt={car.brand} className="car-image" />
+                 {carImage && (
+                        <img src={carImage} alt={car.brand} className="car-image" />
                         )}
               <p>
                 <b>Metai :</b> {car.year}
