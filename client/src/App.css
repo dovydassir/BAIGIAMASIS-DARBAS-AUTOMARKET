@@ -145,3 +145,12 @@ button:hover {
   margin-top: 5px;
   margin-right: 8px;
 }
+
+.car-image {
+  width: 180px;
+  height: 120px;
+  object-fit: contain;
+  background: white;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}

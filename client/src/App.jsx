@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import CarCard from "./components/CarCard";
+import CarForm from "./components/CarForm";
 
 function App() {
   const [cars, setCars] = useState([]);
-  const [editingId, sertEditingId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [error, setError] = useState(null);
  
   const [formData, setFormData] = useState({
     brand: "",
     model: "",
     year: "",
     price: "",
+    fuel: "",
+    mileage: "",
+    imageUrl: "",
+    description: "",
   });
 
   useEffect(() => {
     fetch("http://localhost:5000/api/cars")
-      .then((res) => res.json())
-      .then((data) => setCars(data))
-      .catch((error) => console.error(error));
-  }, []);
+    .then((res) => res.json())
+    .then((data) => setCars(data))
+    .catch((error) => console.log(error));
+    }, []);
+ 
 
   const handleChange = (event) => {
     setFormData({
@@ -28,6 +36,9 @@ function App() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError("");
+
+    
 
     let url = "http://localhost:5000/api/cars";
     let method = "POST";
@@ -44,10 +55,17 @@ function App() {
       },
       body: JSON.stringify(formData),
     })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        throw new Error("Nepavyko sukurti automobilio");
+      }
+    })
     .then((savedCar) => {
       if (editingId) {
         setCars(cars.map((car) => (car._id === editingId ? savedCar : car)));
+        setEditingId(null);
       } else {
         setCars([...cars, savedCar]);
       }
@@ -57,9 +75,16 @@ function App() {
         model: "",
         year: "",
         price: "",
+        fuel: "",
+        mileage: "",
+        imageUrl: "",
+        description: "",
       });
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      console.log(error);
+      setError("Patikrinkite pagaminimo metus, kainą ir ridos rodiklį. Tai turi būti skaičiai.");
+    });
   };
 
   const handleDelete = (id) => {
@@ -77,12 +102,16 @@ function App() {
 
 
     const handleEdit = (car) => {
-      sertEditingId(car._id);
+      setEditingId(car._id);
       setFormData({
         brand: car.brand,
         model: car.model,
         year: car.year,
         price: car.price,
+        fuel: car.fuel,
+        mileage: car.mileage,
+        imageUrl: car.imageUrl,
+        description: car.description,
       });
     };
 
@@ -114,58 +143,32 @@ function App() {
         <main className="content">
           <h2>Automobliai</h2>
 
-          <form className="car-form" onSubmit={handleSubmit}>
-            <h3>Pridėti Automobilį</h3>
-            <input
-            name="brand"
-            placeholder="Markė"
-            value={formData.brand}
-            onChange={handleChange}
-            />
-            <input
-            name="model"
-            placeholder="Modelis"
-            value={formData.model}
-            onChange={handleChange}
-            />
-            <input
-            name="year"
-            placeholder="Metai"
-            value={formData.year}
-            onChange={handleChange}
-            />
-            <input
-            name="price"
-            placeholder="Kaina"
-            value={formData.price}
-            onChange={handleChange}
-            />
-            <button type="submit">Pridėti</button>
-            
+          {error && <p className="error-message">{error}</p>}
 
-        
-          </form>
+          <CarForm
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            editingId={editingId}
+          />
 
           <div className="car-grid">
             {cars.length === 0 && <p>Automobilių nėra.</p>}
 
             {cars.map((car) => (
-            <div className="car-card" key={car._id}>
-              <h3>
-                 {car.brand} {car.model}
-                 </h3>
-              <p>
-                <b>Metai :</b> {car.year}
-                </p>
-              <p> 
-                <b>Kaina :</b> {car.price}
-                </p>
-              <button>Pažiūrėti</button>
-              <button onClick={() => handleEdit(car)}>Redaguoti</button>
-              <button onClick={() => handleDelete(car._id)}> Ištrinti</button>
-            </div>
+            <CarCard
+              key={car._id}
+              car={car}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
             ))}
           </div>
+
+            
+          
+          
+        
         </main>
       </div>
     </div>
