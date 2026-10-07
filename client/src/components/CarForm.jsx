@@ -42,12 +42,18 @@ function Carform({ formData, handleChange, handleSubmit, editingId }) {
             value={formData.mileage}
             onChange={handleChange}
             />
-            <input
+            <select
             name="imageUrl"
             placeholder="Nuotraukos"
             value={formData.imageUrl}
             onChange={handleChange}
-            />
+            >
+                
+                <option value="">Pasirinkite nuotrauką</option>
+                <option value="Audi">Audi</option>
+                <option value="BMW">BMW</option>
+                <option value="Mercedes-Benz">Mercedes-Benz</option>
+            </select>
             <input
             name="description"
             placeholder="Aprašymas"
