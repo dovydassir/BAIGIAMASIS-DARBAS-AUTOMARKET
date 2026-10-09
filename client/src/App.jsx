@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import CarCard from "./components/CarCard";
 import CarForm from "./components/CarForm";
+import { Routes, Route, Link } from "react-router-dom";
+import AddCarPage from "./pages/AddCarPage";
+import CarsPage from "./pages/CarsPage";
+import InquiriesPage from "./pages/InquiriesPage";
+import HomePage from "./pages/HomePage";
 
 function App() {
   const [cars, setCars] = useState([]);
@@ -125,13 +130,13 @@ function App() {
       </header>
 
       <nav className="menu">
-        <a href="#">Pagrindinis</a>
+        <Link to="/">Pagrindinis puslapis</Link>
         <span>|</span>
-        <a href="#">Automobiliai</a>
+        <Link to="/cars">Automobiliai</Link>
         <span>|</span>
-        <a href="#">Pridėti automobilį</a>
+        <Link to="/add-car">Pridėti automobilį</Link>
         <span>|</span>
-        <a href="#">užklausos</a>
+        <Link to="/inquiries">užklausos</Link>
       </nav>
 
       <div className="loyout">
@@ -141,34 +146,34 @@ function App() {
         </aside>
 
         <main className="content">
-          <h2>Automobliai</h2>
-
-          {error && <p className="error-message">{error}</p>}
-
-          <CarForm
-            formData={formData}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            editingId={editingId}
-          />
-
-          <div className="car-grid">
-            {cars.length === 0 && <p>Automobilių nėra.</p>}
-
-            {cars.map((car) => (
-            <CarCard
-              key={car._id}
-              car={car}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route
+            path="/cars"
+            element={
+              <CarsPage
+                cars={cars}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+                CarCard={CarCard}
+              />
+            }
             />
-            ))}
-          </div>
-
-            
-          
-          
-        
+            <Route
+            path="/add-car"
+            element={
+              <AddCarPage
+                error={error}
+                CarForm={CarForm}
+                formData={formData}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+                editingId={editingId}
+              />
+            }
+            />
+            <Route path="/inquiries" element={<InquiriesPage />} />
+          </Routes>
         </main>
       </div>
     </div>
