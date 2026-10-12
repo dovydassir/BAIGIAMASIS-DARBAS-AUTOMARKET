@@ -165,3 +165,102 @@ button:hover {
   border: 1px solid #ccc;
   margin-bottom: 10px;
 }
+
+.success-message {
+  color: darkgreen;
+  font-weight: bold;
+  border: 1px solid darkgreen;
+  padding: 10px;
+  background-color: #ddf8dd;
+}
+
+.inquiry-form {
+  border: 1px solid #ccc;
+  padding: 15px;
+  background-color: #f1f1f1;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px
+}
+
+.inquiry-form select,
+.inquiry-form input
+.inquiry-form textarea {
+  width: 100%;
+  padding: 9px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  background-color: white;
+  color: #333;
+}
+
+.inquiry-form textarea {
+  grid-column: 1 /3;
+  min-height: 80px;
+  resize: vertical;
+}
+
+.inquiry-form button {
+  grid-column: 1 / 3;
+  background-color: #1f3a5f;
+  color: white;
+  border: 1px solid #0f223b;
+  padding: 8px 12px;
+  cursor: pointer;
+  width: 220px;
+  justify-self: center;
+  margin-top: 10px;
+  margin-bottom: 0;
+  font-weight: bold;
+
+}
+
+.inquiry-form button:hover {
+  background-color: #2d4d78;
+}
+
+.inquiry-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.inquiry-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  background-color: #f1f1f1;
+  text-align: left;
+  margin-bottom: 10px
+
+}
+
+.inquiry-card h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+}
+
+.inquiry-card p {
+  margin: 8px 0;
+}
+
+button {
+  border-radius: 6px;
+  transition: 0.5s;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}

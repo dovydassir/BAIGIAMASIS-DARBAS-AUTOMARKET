@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import "./App.css";
 import CarCard from "./components/CarCard";
 import CarForm from "./components/CarForm";
@@ -8,11 +8,24 @@ import CarsPage from "./pages/CarsPage";
 import InquiriesPage from "./pages/InquiriesPage";
 import HomePage from "./pages/HomePage";
 
+
 function App() {
   const [cars, setCars] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
- 
+  const [inquiryMessage, setInquiryMessage] = useState("");
+  const [inquiries, setInquiries] = useState([]);
+
+  const [inquiryForm, setInquiryForm] = useState({
+    car: "",
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  
+  
+
   const [formData, setFormData] = useState({
     brand: "",
     model: "",
@@ -30,11 +43,25 @@ function App() {
     .then((data) => setCars(data))
     .catch((error) => console.log(error));
     }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/inquiries")
+    .then((res) => res.json())
+    .then((data) => setInquiries(data))
+    .catch((error) => console.log(error));
+    }, []);
  
 
   const handleChange = (event) => {
     setFormData({
       ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleInquiryChange = (event) => {
+    setInquiryForm({
+      ...inquiryForm,
       [event.target.name]: event.target.value,
     });
   };
@@ -91,6 +118,53 @@ function App() {
       setError("Patikrinkite pagaminimo metus, kainą ir ridos rodiklį. Tai turi būti skaičiai.");
     });
   };
+
+  const handleInquirySubmit = (event) => {
+    event.preventDefault();
+    setInquiryMessage("");
+    fetch("http://localhost:5000/api/inquiries", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inquiryForm),
+    })
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        throw new Error("Nepavyko sukurti užklausų");
+      }
+    })
+    .then(() => {
+      setInquiryForm({
+        car: "",
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+      setInquiryMessage("Užklausa išsiųsta sėkmingai.");
+      fetch("http://localhost:5000/api/inquiries")
+      .then((res) => res.json())
+      .then((data) => setInquiries(data))
+      .catch((error) => console.log(error));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  };
+
+  const handleInquiryDelete = (id) => {
+    fetch(`http://localhost:5000/api/inquiries/${id}`, {
+      method: "DELETE",
+    })
+    .then((res) => res.json())
+    .then(() => {
+      setInquiries(inquiries.filter((inquiry) => inquiry._id !== id));
+    })
+    .catch((error) => console.log(error));
+  }
 
   const handleDelete = (id) => {
     console.log(id);
@@ -172,7 +246,21 @@ function App() {
               />
             }
             />
-            <Route path="/inquiries" element={<InquiriesPage />} />
+            <Route path="/inquiries" 
+            element={
+            <InquiriesPage 
+            cars={cars}
+            inquiries={inquiries}
+            inquiryForm={inquiryForm}
+            inquiryMessage={inquiryMessage}
+            handleInquiryChange={handleInquiryChange}
+            handleInquirySubmit={handleInquirySubmit}
+            handleInquiryDelete={handleInquiryDelete}
+
+            
+            />
+            }
+            />
           </Routes>
         </main>
       </div>
