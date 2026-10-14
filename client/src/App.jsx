@@ -2,11 +2,12 @@ import {  useEffect, useState } from "react";
 import "./App.css";
 import CarCard from "./components/CarCard";
 import CarForm from "./components/CarForm";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import AddCarPage from "./pages/AddCarPage";
 import CarsPage from "./pages/CarsPage";
 import InquiriesPage from "./pages/InquiriesPage";
 import HomePage from "./pages/HomePage";
+import CarDetailsPage from "./pages/CarDetailsPage";
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [inquiries, setInquiries] = useState([]);
   const [inquiryEditingId, setInquiryEditingId] = useState(null);
+  const navigate = useNavigate();
 
   const [inquiryForm, setInquiryForm] = useState({
     car: "",
@@ -216,6 +218,7 @@ function App() {
         imageUrl: car.imageUrl,
         description: car.description,
       });
+      navigate("/add-car");
     };
 
 
@@ -244,6 +247,7 @@ function App() {
         </aside>
 
         <main className="content">
+
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route
@@ -287,6 +291,7 @@ function App() {
             />
             }
             />
+            <Route path="/cars/:id" element={<CarDetailsPage />} />
           </Routes>
         </main>
       </div>

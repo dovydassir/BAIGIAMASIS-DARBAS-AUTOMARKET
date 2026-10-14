@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import audiImage from "../pictures/Audi.jpg";
 import bmwImage from "../pictures/BMW.jpg";
 import mercedesImage from "../pictures/Mercedes-Benz.jpg";
@@ -5,7 +6,8 @@ import mercedesImage from "../pictures/Mercedes-Benz.jpg";
 
 
 function CarCard({car, onEdit, onDelete}) {
-    const Images = {
+  const navigate = useNavigate();  
+  const Images = {
   Audi: audiImage,
   BMW: bmwImage,
   "Mercedes-Benz": mercedesImage,};
@@ -36,7 +38,7 @@ function CarCard({car, onEdit, onDelete}) {
                 <b>Aprasymas :</b> {car.description}
               </p>
               
-              <button>Pažiūrėti</button>
+              <button onClick={() => navigate(`/cars/${car._id}`)}> Pažiūrėti</button>
               <button onClick={() => onEdit(car)}>Redaguoti</button>
               <button onClick={() => onDelete(car._id)}> Ištrinti</button>
         </div>
