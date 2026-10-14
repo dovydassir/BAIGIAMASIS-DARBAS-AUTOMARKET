@@ -15,6 +15,7 @@ function App() {
   const [error, setError] = useState(null);
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [inquiries, setInquiries] = useState([]);
+  const [inquiryEditingId, setInquiryEditingId] = useState(null);
 
   const [inquiryForm, setInquiryForm] = useState({
     car: "",
@@ -65,6 +66,18 @@ function App() {
       [event.target.name]: event.target.value,
     });
   };
+
+  const handleInquiryEdit = (inquiry) => {
+    setInquiryEditingId(inquiry._id);
+    setInquiryForm({
+      car: inquiry.car._id,
+      name: inquiry.name,
+      email: inquiry.email,
+      phone: inquiry.phone,
+      message: inquiry.message,
+    });
+    setInquiryMessage("");
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -122,8 +135,16 @@ function App() {
   const handleInquirySubmit = (event) => {
     event.preventDefault();
     setInquiryMessage("");
-    fetch("http://localhost:5000/api/inquiries", {
-      method: "POST",
+    let url = "http://localhost:5000/api/inquiries"; 
+    let method = "POST";
+
+    if (inquiryEditingId) {
+      url = `http://localhost:5000/api/inquiries/${inquiryEditingId}`;
+      method = "PUT";
+    }
+
+    fetch(url, {
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
@@ -137,6 +158,8 @@ function App() {
       }
     })
     .then(() => {
+
+      setInquiryEditingId(null);
       setInquiryForm({
         car: "",
         name: "",
@@ -144,7 +167,8 @@ function App() {
         phone: "",
         message: "",
       });
-      setInquiryMessage("Užklausa išsiųsta sėkmingai.");
+      setInquiryMessage("Užklausa išsaugota sėkmingai.");
+      
       fetch("http://localhost:5000/api/inquiries")
       .then((res) => res.json())
       .then((data) => setInquiries(data))
@@ -256,6 +280,8 @@ function App() {
             handleInquiryChange={handleInquiryChange}
             handleInquirySubmit={handleInquirySubmit}
             handleInquiryDelete={handleInquiryDelete}
+            handleInquiryEdit={handleInquiryEdit}
+            inquiryEditingId={inquiryEditingId}
 
             
             />

@@ -4,7 +4,9 @@ function InquiriesPage({ cars,
     handleInquirySubmit, 
     inquiryMessage, 
     inquiries, 
-    handleInquiryDelete }) {
+    handleInquiryDelete,
+    handleInquiryEdit,
+    inquiryEditingId }) {
     return (
         <div>
             <h2>Užklausų sąrašas</h2>
@@ -52,7 +54,8 @@ function InquiriesPage({ cars,
                 value={inquiryForm.message}
                 onChange={handleInquiryChange}
                 />
-                <button type="submit">Sukurti užklausą</button>
+                <button type="submit">
+                    {inquiryEditingId ? "išsaugoti pakeitimus" : "Sukurti užklausą"}</button>
 
             </form>
             <h3>Gautos užklausos</h3>
@@ -67,6 +70,9 @@ function InquiriesPage({ cars,
                 <p>Email: {inquiry.email}</p>
                 <p>Telefonas: {inquiry.phone}</p>
                 <p>Žinutė: {inquiry.message}</p>
+
+                <button onClick={() => handleInquiryEdit(inquiry)}>Redaguoti</button>
+                
 
                 <button onClick={() => handleInquiryDelete(inquiry._id)}>Ištrinti</button>
                 </div>
