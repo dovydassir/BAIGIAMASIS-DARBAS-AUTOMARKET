@@ -30,6 +30,7 @@ function InquiriesPage({ cars,
                 <input
                 type="text"
                 name="name"
+                required
                 placeholder="Vardas"
                 value={inquiryForm.name}
                 onChange={handleInquiryChange}
@@ -37,6 +38,7 @@ function InquiriesPage({ cars,
                 <input
                 type="email"
                 name="email"
+                required
                 placeholder="El.pastas"
                 value={inquiryForm.email}
                 onChange={handleInquiryChange}
@@ -44,12 +46,14 @@ function InquiriesPage({ cars,
                 <input
                 type="tel"
                 name="phone"
+                required
                 placeholder="Telefono numeris"
                 value={inquiryForm.phone}
                 onChange={handleInquiryChange}
                 />
                 <textarea
                 name="message"
+                required
                 placeholder="Žinutė"
                 value={inquiryForm.message}
                 onChange={handleInquiryChange}
