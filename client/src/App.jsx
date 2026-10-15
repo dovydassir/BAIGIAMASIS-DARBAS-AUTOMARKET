@@ -18,6 +18,7 @@ function App() {
   const [inquiries, setInquiries] = useState([]);
   const [inquiryEditingId, setInquiryEditingId] = useState(null);
   const navigate = useNavigate();
+  const [inquiryError, setInquiryError] = useState("");
 
   const [inquiryForm, setInquiryForm] = useState({
     car: "",
@@ -137,6 +138,7 @@ function App() {
   const handleInquirySubmit = (event) => {
     event.preventDefault();
     setInquiryMessage("");
+    setInquiryError("");
     let url = "http://localhost:5000/api/inquiries"; 
     let method = "POST";
 
@@ -178,6 +180,7 @@ function App() {
     })
     .catch((error) => {
       console.log(error);
+      setInquiryError("Nepavyko išsaugoti užklausos. Pabandykityte dar karta.");
     });
   };
 
@@ -286,6 +289,7 @@ function App() {
             handleInquiryDelete={handleInquiryDelete}
             handleInquiryEdit={handleInquiryEdit}
             inquiryEditingId={inquiryEditingId}
+            inquiryError={inquiryError}
 
             
             />

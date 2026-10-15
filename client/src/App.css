@@ -284,3 +284,11 @@ button:active {
   object-fit: contain;
   scroll-snap-align: start;
 }
+
+.error-message {
+  color: darkred;
+  font-weight: bold;
+  border: 1px solid darkred;
+  padding: 10px;
+  background-color: #fdd;
+}

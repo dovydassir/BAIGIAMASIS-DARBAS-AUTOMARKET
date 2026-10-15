@@ -6,13 +6,16 @@ function InquiriesPage({ cars,
     inquiries, 
     handleInquiryDelete,
     handleInquiryEdit,
-    inquiryEditingId }) {
+    inquiryEditingId,
+    inquiryError }) {
     return (
         <div>
             <h2>Užklausų sąrašas</h2>
             <p>Čia galima palikti užklausą dėl pasirinkto automobilio</p>
 
             {inquiryMessage && <p className="success-message">{inquiryMessage}</p>}
+
+            {inquiryError && <p className="error-message">{inquiryError}</p>}
 
             <form className="inquiry-form" onSubmit={handleInquirySubmit}>
                 <select
