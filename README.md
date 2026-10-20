@@ -32,13 +32,15 @@ Terminale atidaryti pagrindiniame projekto aplankale:
 
 ```powershell
 cd server
-npm install```
+npm install
+```
 
 Server aplankale sukurti (.env) failą:
 
 ```env
 PORT=5000
-MONGODB_URI=MONGODB_PRISIJUNGIMO-EILUTĖ```
+MONGODB_URI=MONGODB_PRISIJUNGIMO-EILUTĖ
+```
 
 Vietoje MONGODB_PRISIJUNGIMO-EILUTĖ įrašyti savo MongoDB prisijungimo eilutę.
 .env failas į GitHub nekeliamas.
@@ -46,9 +48,18 @@ Vietoje MONGODB_PRISIJUNGIMO-EILUTĖ įrašyti savo MongoDB prisijungimo eilutę
 Paleisti serverį:
 
 ```powershell
+npm run dev
+```
+
+### Klijento paleidimas
+
+Atidaryti kitą terminalą pagrindiniame projekto aplankale
+
+```powershell
 cd client
 npm install
-npm run dev```
+npm run dev
+```
 
 naršyklėje atidaryti Vite terminale nurodytą adresą http://localhost:5173.
 

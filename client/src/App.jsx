@@ -19,6 +19,8 @@ function App() {
   const [inquiryEditingId, setInquiryEditingId] = useState(null);
   const navigate = useNavigate();
   const [inquiryError, setInquiryError] = useState("");
+    
+  
 
   const [inquiryForm, setInquiryForm] = useState({
     car: "",
@@ -73,7 +75,7 @@ function App() {
   const handleInquiryEdit = (inquiry) => {
     setInquiryEditingId(inquiry._id);
     setInquiryForm({
-      car: inquiry.car._id,
+      car: inquiry.car?._id || "",
       name: inquiry.name,
       email: inquiry.email,
       phone: inquiry.phone,
@@ -185,22 +187,39 @@ function App() {
   };
 
   const handleInquiryDelete = (id) => {
+    setInquiryMessage("");
+    setInquiryError("");
     fetch(`http://localhost:5000/api/inquiries/${id}`, {
       method: "DELETE",
     })
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Nepavyko ištrinti užklausos");
+      }
+      return res.json();
+    })
     .then(() => {
       setInquiries(inquiries.filter((inquiry) => inquiry._id !== id));
     })
-    .catch((error) => console.log(error));
-  }
+    .catch((error) => {
+    console.log(error);
+    setInquiryError(
+      "Nepavyko ištrinti užklausos. Pabandykite dar karta."
+    );
+    });     
+  } 
 
   const handleDelete = (id) => {
     console.log(id);
     fetch(`http://localhost:5000/api/cars/${id}`, {
       method: "DELETE",
     })
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Nepavyko ištrinti automobilių");
+      }
+      return res.json();
+    })
     .then(() => {
       setCars(cars.filter((car) => car._id !== id));
     })
@@ -224,6 +243,21 @@ function App() {
       navigate("/add-car");
     };
 
+    const resetCarForm = () => {
+      setEditingId(null);
+      setError("");
+      setFormData({
+        brand: "",
+        model: "",
+        year: "",
+        price: "",
+        fuel: "",
+        mileage: "",
+        imageUrl: "",
+        description: "",
+      });
+    };
+
 
 
   return (
@@ -238,7 +272,7 @@ function App() {
         <span>|</span>
         <Link to="/cars">Automobiliai</Link>
         <span>|</span>
-        <Link to="/add-car">Pridėti automobilį</Link>
+        <Link to="/add-car" onClick={resetCarForm}>Pridėti automobilį</Link>
         <span>|</span>
         <Link to="/inquiries">užklausos</Link>
       </nav>

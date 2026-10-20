@@ -20,6 +20,7 @@ function InquiriesPage({ cars,
             <form className="inquiry-form" onSubmit={handleInquirySubmit}>
                 <select
                 name="car"
+                required
                 value={inquiryForm.car}
                 onChange={handleInquiryChange}
                 >

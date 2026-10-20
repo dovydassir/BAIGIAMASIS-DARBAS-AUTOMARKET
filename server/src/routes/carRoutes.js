@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
     const cars = await Car.find();
     res.json(cars);
   } catch (error) {
-    res.status(500).json({ message: "Nepavyko gauti automobiliu" });
+    res.status(500).json({ message: "Nepavyko gauti automobilių" });
   }
 });
 
@@ -31,8 +31,11 @@ router.get("/:id", async (req, res) => {
 
         res.json(car);
     } catch (error) {
-        res.status(500).json({ message: "Nepavyko gauti automobilio" });
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "Netinkamas automobilio ID" });
     }
+    res.status(500).json({ message: "Nepavyko gauti automobilio" });
+  }
 });
 
 router.put("/:id", async (req, res) => {
@@ -62,6 +65,9 @@ router.delete("/:id", async (req, res) => {
 
         res.json({ message: "Automobilis ištrintas"});
     } catch (error) {
+        if (error.name === "CastError") {
+            return res.status(400).json({ message: "Netinkamas automobilio ID" });
+        }
         res.status(500).json({ message: "Nepavyko ištrinti automobilio" });
     }
 });
