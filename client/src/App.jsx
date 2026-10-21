@@ -2,12 +2,13 @@ import {  useEffect, useState } from "react";
 import "./App.css";
 import CarCard from "./components/CarCard";
 import CarForm from "./components/CarForm";
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import AddCarPage from "./pages/AddCarPage";
 import CarsPage from "./pages/CarsPage";
 import InquiriesPage from "./pages/InquiriesPage";
 import HomePage from "./pages/HomePage";
 import CarDetailsPage from "./pages/CarDetailsPage";
+import Menu from "./components/Menu";
 
 
 function App() {
@@ -45,14 +46,24 @@ function App() {
 
   useEffect(() => {
     fetch("http://localhost:5000/api/cars")
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Nepavyko gauti duomenų");
+      }
+      return res.json();
+    })
     .then((data) => setCars(data))
     .catch((error) => console.log(error));
     }, []);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/inquiries")
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Nepavyko gauti duomenų");
+      }
+      return res.json();
+    })
     .then((data) => setInquiries(data))
     .catch((error) => console.log(error));
     }, []);
@@ -176,7 +187,12 @@ function App() {
       setInquiryMessage("Užklausa išsaugota sėkmingai.");
       
       fetch("http://localhost:5000/api/inquiries")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Nepavyko gauti duomenų");
+        }
+        return res.json();
+      })
       .then((data) => setInquiries(data))
       .catch((error) => console.log(error));
     })
@@ -267,21 +283,9 @@ function App() {
         <p>Automobilių skelbimai</p>
       </header>
 
-      <nav className="menu">
-        <Link to="/">Pagrindinis puslapis</Link>
-        <span>|</span>
-        <Link to="/cars">Automobiliai</Link>
-        <span>|</span>
-        <Link to="/add-car" onClick={resetCarForm}>Pridėti automobilį</Link>
-        <span>|</span>
-        <Link to="/inquiries">užklausos</Link>
-      </nav>
+      <Menu resetCarForm={resetCarForm} />
 
       <div className="loyout">
-        <aside className="sidebar">
-          <h2>Informacija</h2>
-          <p>valdyti automobiliu užklausas</p>
-        </aside>
 
         <main className="content">
 

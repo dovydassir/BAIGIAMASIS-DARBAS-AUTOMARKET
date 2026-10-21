@@ -16,9 +16,9 @@ const inquirySchema = new mongoose.Schema(
             required: true,
             trim: true,
             match: [
-                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                "Įveskite tinkamą el. pašto adresą",
-            ],
+                 /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    "Įveskite tinkamą el. pašto adresą",
+                ],
 
         },
         phone: {

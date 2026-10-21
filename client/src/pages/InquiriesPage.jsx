@@ -24,7 +24,7 @@ function InquiriesPage({ cars,
                 value={inquiryForm.car}
                 onChange={handleInquiryChange}
                 >
-                <option value="">Pasirinkite automobili</option>
+                <option value="">Pasirinkite automobilį</option>
                 {cars.map((car) => (
                     <option key={car._id} value={car._id}>
                     {car.brand} {car.model}
@@ -43,7 +43,7 @@ function InquiriesPage({ cars,
                 type="email"
                 name="email"
                 required
-                placeholder="El.pastas"
+                placeholder="El.paštas"
                 value={inquiryForm.email}
                 onChange={handleInquiryChange}
                 />
