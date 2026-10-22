@@ -9,6 +9,7 @@ import InquiriesPage from "./pages/InquiriesPage";
 import HomePage from "./pages/HomePage";
 import CarDetailsPage from "./pages/CarDetailsPage";
 import Menu from "./components/Menu";
+import Logo from "./components/Logo";
 
 
 function App() {
@@ -279,8 +280,8 @@ function App() {
   return (
     <div className="page">
       <header className="header">
-        <h1>Auto Market</h1>
-        <p>Automobilių skelbimai</p>
+        <Logo />
+        <h1>Automobilių skelbimai</h1>
       </header>
 
       <Menu resetCarForm={resetCarForm} />
@@ -290,7 +291,7 @@ function App() {
         <main className="content">
 
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage cars={cars} />} />
             <Route
             path="/cars"
             element={

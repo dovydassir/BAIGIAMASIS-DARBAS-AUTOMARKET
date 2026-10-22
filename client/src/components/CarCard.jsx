@@ -39,8 +39,12 @@ function CarCard({car, onEdit, onDelete}) {
               </p>
               
               <button onClick={() => navigate(`/cars/${car._id}`)}> Pažiūrėti</button>
-              <button onClick={() => onEdit(car)}>Redaguoti</button>
+              {onEdit && (
+              <button onClick={() => onEdit(car)}>Redaguoti</button> 
+              )}
+              {onDelete && (
               <button onClick={() => onDelete(car._id)}> Ištrinti</button>
+              )}
         </div>
     );
 }
