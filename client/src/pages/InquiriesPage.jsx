@@ -4,7 +4,10 @@ function InquiriesPage({ cars,
     handleInquirySubmit, 
     inquiryMessage, 
     inquiries, 
-    handleInquiryDelete }) {
+    handleInquiryDelete,
+    handleInquiryEdit,
+    inquiryEditingId,
+    inquiryError }) {
     return (
         <div>
             <h2>Užklausų sąrašas</h2>
@@ -12,13 +15,16 @@ function InquiriesPage({ cars,
 
             {inquiryMessage && <p className="success-message">{inquiryMessage}</p>}
 
+            {inquiryError && <p className="error-message">{inquiryError}</p>}
+
             <form className="inquiry-form" onSubmit={handleInquirySubmit}>
                 <select
                 name="car"
+                required
                 value={inquiryForm.car}
                 onChange={handleInquiryChange}
                 >
-                <option value="">Pasirinkite automobili</option>
+                <option value="">Pasirinkite automobilį</option>
                 {cars.map((car) => (
                     <option key={car._id} value={car._id}>
                     {car.brand} {car.model}
@@ -28,6 +34,7 @@ function InquiriesPage({ cars,
                 <input
                 type="text"
                 name="name"
+                required
                 placeholder="Vardas"
                 value={inquiryForm.name}
                 onChange={handleInquiryChange}
@@ -35,24 +42,28 @@ function InquiriesPage({ cars,
                 <input
                 type="email"
                 name="email"
-                placeholder="El.pastas"
+                required
+                placeholder="El.paštas"
                 value={inquiryForm.email}
                 onChange={handleInquiryChange}
                 />
                 <input
                 type="tel"
                 name="phone"
+                required
                 placeholder="Telefono numeris"
                 value={inquiryForm.phone}
                 onChange={handleInquiryChange}
                 />
                 <textarea
                 name="message"
+                required
                 placeholder="Žinutė"
                 value={inquiryForm.message}
                 onChange={handleInquiryChange}
                 />
-                <button type="submit">Sukurti užklausą</button>
+                <button type="submit">
+                    {inquiryEditingId ? "išsaugoti pakeitimus" : "Sukurti užklausą"}</button>
 
             </form>
             <h3>Gautos užklausos</h3>
@@ -67,6 +78,9 @@ function InquiriesPage({ cars,
                 <p>Email: {inquiry.email}</p>
                 <p>Telefonas: {inquiry.phone}</p>
                 <p>Žinutė: {inquiry.message}</p>
+
+                <button onClick={() => handleInquiryEdit(inquiry)}>Redaguoti</button>
+                
 
                 <button onClick={() => handleInquiryDelete(inquiry._id)}>Ištrinti</button>
                 </div>

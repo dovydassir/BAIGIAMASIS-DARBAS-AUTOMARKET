@@ -14,6 +14,12 @@ const inquirySchema = new mongoose.Schema(
         email: {
             type: String,
             required: true,
+            trim: true,
+            match: [
+                 /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    "Įveskite tinkamą el. pašto adresą",
+                ],
+
         },
         phone: {
             type: String,

@@ -2,11 +2,14 @@ import {  useEffect, useState } from "react";
 import "./App.css";
 import CarCard from "./components/CarCard";
 import CarForm from "./components/CarForm";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import AddCarPage from "./pages/AddCarPage";
 import CarsPage from "./pages/CarsPage";
 import InquiriesPage from "./pages/InquiriesPage";
 import HomePage from "./pages/HomePage";
+import CarDetailsPage from "./pages/CarDetailsPage";
+import Menu from "./components/Menu";
+import Logo from "./components/Logo";
 
 
 function App() {
@@ -15,6 +18,11 @@ function App() {
   const [error, setError] = useState(null);
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [inquiries, setInquiries] = useState([]);
+  const [inquiryEditingId, setInquiryEditingId] = useState(null);
+  const navigate = useNavigate();
+  const [inquiryError, setInquiryError] = useState("");
+    
+  
 
   const [inquiryForm, setInquiryForm] = useState({
     car: "",
@@ -39,14 +47,24 @@ function App() {
 
   useEffect(() => {
     fetch("http://localhost:5000/api/cars")
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Nepavyko gauti duomenų");
+      }
+      return res.json();
+    })
     .then((data) => setCars(data))
     .catch((error) => console.log(error));
     }, []);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/inquiries")
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Nepavyko gauti duomenų");
+      }
+      return res.json();
+    })
     .then((data) => setInquiries(data))
     .catch((error) => console.log(error));
     }, []);
@@ -65,6 +83,18 @@ function App() {
       [event.target.name]: event.target.value,
     });
   };
+
+  const handleInquiryEdit = (inquiry) => {
+    setInquiryEditingId(inquiry._id);
+    setInquiryForm({
+      car: inquiry.car?._id || "",
+      name: inquiry.name,
+      email: inquiry.email,
+      phone: inquiry.phone,
+      message: inquiry.message,
+    });
+    setInquiryMessage("");
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -122,8 +152,17 @@ function App() {
   const handleInquirySubmit = (event) => {
     event.preventDefault();
     setInquiryMessage("");
-    fetch("http://localhost:5000/api/inquiries", {
-      method: "POST",
+    setInquiryError("");
+    let url = "http://localhost:5000/api/inquiries"; 
+    let method = "POST";
+
+    if (inquiryEditingId) {
+      url = `http://localhost:5000/api/inquiries/${inquiryEditingId}`;
+      method = "PUT";
+    }
+
+    fetch(url, {
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
@@ -137,6 +176,8 @@ function App() {
       }
     })
     .then(() => {
+
+      setInquiryEditingId(null);
       setInquiryForm({
         car: "",
         name: "",
@@ -144,34 +185,58 @@ function App() {
         phone: "",
         message: "",
       });
-      setInquiryMessage("Užklausa išsiųsta sėkmingai.");
+      setInquiryMessage("Užklausa išsaugota sėkmingai.");
+      
       fetch("http://localhost:5000/api/inquiries")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Nepavyko gauti duomenų");
+        }
+        return res.json();
+      })
       .then((data) => setInquiries(data))
       .catch((error) => console.log(error));
     })
     .catch((error) => {
       console.log(error);
+      setInquiryError("Nepavyko išsaugoti užklausos. Pabandykityte dar karta.");
     });
   };
 
   const handleInquiryDelete = (id) => {
+    setInquiryMessage("");
+    setInquiryError("");
     fetch(`http://localhost:5000/api/inquiries/${id}`, {
       method: "DELETE",
     })
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Nepavyko ištrinti užklausos");
+      }
+      return res.json();
+    })
     .then(() => {
       setInquiries(inquiries.filter((inquiry) => inquiry._id !== id));
     })
-    .catch((error) => console.log(error));
-  }
+    .catch((error) => {
+    console.log(error);
+    setInquiryError(
+      "Nepavyko ištrinti užklausos. Pabandykite dar karta."
+    );
+    });     
+  } 
 
   const handleDelete = (id) => {
     console.log(id);
     fetch(`http://localhost:5000/api/cars/${id}`, {
       method: "DELETE",
     })
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Nepavyko ištrinti automobilių");
+      }
+      return res.json();
+    })
     .then(() => {
       setCars(cars.filter((car) => car._id !== id));
     })
@@ -192,6 +257,22 @@ function App() {
         imageUrl: car.imageUrl,
         description: car.description,
       });
+      navigate("/add-car");
+    };
+
+    const resetCarForm = () => {
+      setEditingId(null);
+      setError("");
+      setFormData({
+        brand: "",
+        model: "",
+        year: "",
+        price: "",
+        fuel: "",
+        mileage: "",
+        imageUrl: "",
+        description: "",
+      });
     };
 
 
@@ -199,29 +280,18 @@ function App() {
   return (
     <div className="page">
       <header className="header">
-        <h1>Auto Market</h1>
-        <p>Automobilių skelbimai</p>
+        <Logo />
+        <h1>Automobilių skelbimai</h1>
       </header>
 
-      <nav className="menu">
-        <Link to="/">Pagrindinis puslapis</Link>
-        <span>|</span>
-        <Link to="/cars">Automobiliai</Link>
-        <span>|</span>
-        <Link to="/add-car">Pridėti automobilį</Link>
-        <span>|</span>
-        <Link to="/inquiries">užklausos</Link>
-      </nav>
+      <Menu resetCarForm={resetCarForm} />
 
       <div className="loyout">
-        <aside className="sidebar">
-          <h2>Informacija</h2>
-          <p>valdyti automobiliu užklausas</p>
-        </aside>
 
         <main className="content">
+
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage cars={cars} />} />
             <Route
             path="/cars"
             element={
@@ -256,11 +326,15 @@ function App() {
             handleInquiryChange={handleInquiryChange}
             handleInquirySubmit={handleInquirySubmit}
             handleInquiryDelete={handleInquiryDelete}
+            handleInquiryEdit={handleInquiryEdit}
+            inquiryEditingId={inquiryEditingId}
+            inquiryError={inquiryError}
 
             
             />
             }
             />
+            <Route path="/cars/:id" element={<CarDetailsPage />} />
           </Routes>
         </main>
       </div>
