@@ -64,6 +64,14 @@ function Carform({ formData, handleChange, handleSubmit, editingId }) {
                 <option value="Audi">Audi A8</option>
                 <option value="BMW">BMW 3 series</option>
                 <option value="Mercedes-Benz">Mercedes-Benz GLC</option>
+                <option value="Ford">Ford Edge</option>
+                <option value="Toyota">Toyota Corolla</option>
+                <option value="Honda">Honda CR-V</option>
+                <option value="Kia">Kia Sorento</option>
+                <option value="Mitsubishi">Mitsubishi XForce</option>
+                <option value="Peugeot">Peugeot e-2008</option>
+                <option value="Skoda">Skoda Kamiq</option>
+                <option value="Volkswagen">Volkswagen Passat</option>
             </select>
             <input
             name="description"
