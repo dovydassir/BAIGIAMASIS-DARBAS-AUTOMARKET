@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
     try {
         const inquiry = await Inquiry.create(req.body);
         const savedInquiry = await Inquiry.findById(inquiry._id).populate("car");
-        res.status(201).json(inquiry);
+        res.status(201).json(savedInquiry);
     } catch (error) {
         res.status(400).json({ message: "Nepavyko sukurti užklausų" });
     }
