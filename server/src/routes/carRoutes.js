@@ -17,9 +17,21 @@ router.post("/", async (req, res) => {
     const car = await Car.create(req.body);
     res.status(201).json(car);
   } catch (error) {
-    res.status(400).json({ message: "Nepavyko sukurti automobilio" });
-  }
+    if (
+        error.name === "ValidationError" ||
+        error.name === "CastError"
+    ) {
+        return res.status(400).json({
+            message:"Netinkami automobilio duomenys",
+        });
+    }
+
+    res.status(500).json({
+        message:"Nepavyko išsaugoti automobilio",
+    });
+}
 });
+
 
 router.get("/:id", async (req, res) => {
     try {
@@ -51,8 +63,19 @@ router.put("/:id", async (req, res) => {
 
         res.json(car);
     } catch (error) {
-        res.status(400).json({ message: "Nepavyko atnaujinti automobilio" });
+    if (
+        error.name === "ValidationError" ||
+        error.name === "CastError"
+    ) {
+        return res.status(400).json({
+            message:"Netinkami automobilio duomenys",
+        });
     }
+
+    res.status(500).json({
+        message:"Nepavyko išsaugoti automobilio",
+    });
+}
 });
 
 router.delete("/:id", async (req, res) => {

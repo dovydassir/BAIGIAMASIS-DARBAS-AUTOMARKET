@@ -16,11 +16,24 @@ router.post("/", async (req, res) => {
     try {
         const inquiry = await Inquiry.create(req.body);
         const savedInquiry = await Inquiry.findById(inquiry._id).populate("car");
-        res.status(201).json(inquiry);
+
+        res.status(201).json(savedInquiry);
     } catch (error) {
-        res.status(400).json({ message: "Nepavyko sukurti užklausų" });
+        if (
+            error.name === "ValidationError" ||
+            error.name === "CastError"
+        ) {
+            return res.status(400).json({
+                message: "Netinkami užklausos duomenys",
+            });
+        }
+
+        res.status(500).json({
+            message: "Nepavyko išsaugoti užklausos",
+        });
     }
 });
+       
 
 router.put("/:id", async (req, res) => {
     try {
@@ -35,20 +48,41 @@ router.put("/:id", async (req, res) => {
 
         res.json(inquiry);
     } catch (error) {
-        res.status(400).json({ message: "Nepavyko atnaujinti užklausos" });
+        if (
+            error.name === "ValidationError" ||
+            error.name === "CastError"
+        ) {
+            return res.status(400).json({
+                message: "Netinkami užklausos duomenys",
+            });
+        }
+
+        res.status(500).json({
+            message: "Nepavyko išsaugoti užklausos",
+        });
     }
 });
 
 router.delete("/:id", async (req, res) => {
     try {
         const inquiry = await Inquiry.findByIdAndDelete(req.params.id);
+
         if (!inquiry) {
             return res.status(404).json({ message: "Užklausa nerasta" });
         }
+        
         res.json({ message: "Užklausa ištrinta" });
         } catch (error) {
-        res.status(500).json({ message: "Nepavyko ištrinti užklausos" });
-    }
+        if (error.name === "CastError") {
+         return res.status(400).json({
+        message: "Netinkamas užklausos ID",
+        });
+        }
+
+  res.status(500).json({
+    message: "Nepavyko ištrinti užklausos",
+  });
+}
 });
 
 module.exports = router;

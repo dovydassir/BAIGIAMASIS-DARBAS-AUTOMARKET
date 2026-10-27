@@ -14,6 +14,7 @@ import Logo from "./components/Logo";
 
 function App() {
   const [cars, setCars] = useState([]);
+  const [carsError, setCarsError] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
   const [inquiryMessage, setInquiryMessage] = useState("");
@@ -54,8 +55,13 @@ function App() {
       return res.json();
     })
     .then((data) => setCars(data))
-    .catch((error) => console.log(error));
+    .catch((error) => {
+    console.log(error);
+    setCarsError(
+    "Nepavyko užkrauti automobilių. Patikrinkite, ar paleistas serveris.");
+    });
     }, []);
+
 
   useEffect(() => {
     fetch("http://localhost:5000/api/inquiries")
@@ -66,7 +72,12 @@ function App() {
       return res.json();
     })
     .then((data) => setInquiries(data))
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      console.log(error);
+      setInquiryError(
+        "Nepavyko užkrauti užklausų. Patikrinkite, ar paleistas serveris."
+      );
+    });
     }, []);
  
 
@@ -145,7 +156,7 @@ function App() {
     })
     .catch((error) => {
       console.log(error);
-      setError("Patikrinkite pagaminimo metus, kainą ir ridos rodiklį. Tai turi būti skaičiai.");
+      setError("Nepavyko išsaugoti automobilio. Patikrinkite įvestus duomenis.");
     });
   };
 
@@ -227,23 +238,27 @@ function App() {
   } 
 
   const handleDelete = (id) => {
-    console.log(id);
+    setCarsError("");
+
     fetch(`http://localhost:5000/api/cars/${id}`, {
       method: "DELETE",
     })
     .then((res) => {
       if (!res.ok) {
-        throw new Error("Nepavyko ištrinti automobilių");
+        throw new Error("Nepavyko ištrinti automobilio");
       }
       return res.json();
     })
     .then(() => {
       setCars(cars.filter((car) => car._id !== id));
     })
-    .catch((error) => console.log(error));
-
-    };
-
+    .catch((error) => {
+    console.log(error);
+    setCarsError(
+      "Nepavyko ištrinti automobilio. Pabandykite dar kartą."
+    );
+    });     
+  }
 
     const handleEdit = (car) => {
       setEditingId(car._id);
@@ -289,6 +304,8 @@ function App() {
       <div className="loyout">
 
         <main className="content">
+
+          {carsError && <p className="error-message">{carsError}</p>}
 
           <Routes>
             <Route path="/" element={<HomePage cars={cars} />} />
