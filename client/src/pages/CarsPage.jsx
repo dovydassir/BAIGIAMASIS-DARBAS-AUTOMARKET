@@ -1,7 +1,9 @@
-function CarsPage({ cars, handleEdit, handleDelete, CarCard }) {
+function CarsPage({ cars, handleEdit, handleDelete, CarCard, carsError }) {
     return (
         <div>
-            <h2>Automobiliu sarasas</h2>
+            <h2>Automobilių sąrašas</h2>
+
+            {carsError && <p className="error-message">{carsError}</p>}
 
             <div className="car-grid">
                 {cars.length === 0 && <p>Automobilių nėra.</p>}

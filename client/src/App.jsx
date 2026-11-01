@@ -243,13 +243,14 @@ function App() {
     fetch(`http://localhost:5000/api/cars/${id}`, {
       method: "DELETE",
     })
-    .then((res) => {
+    .then(async (res) => {
+      const data = await res.json();
+
       if (!res.ok) {
-        throw new Error("Nepavyko ištrinti automobilio");
+        setCarsError(data.message || "Nepavyko ištrinti automobilio");
+        return;
       }
-      return res.json();
-    })
-    .then(() => {
+
       setCars(cars.filter((car) => car._id !== id));
     })
     .catch((error) => {
@@ -258,7 +259,7 @@ function App() {
       "Nepavyko ištrinti automobilio. Pabandykite dar kartą."
     );
     });     
-  }
+  };
 
     const handleEdit = (car) => {
       setEditingId(car._id);
@@ -305,8 +306,6 @@ function App() {
 
         <main className="content">
 
-          {carsError && <p className="error-message">{carsError}</p>}
-
           <Routes>
             <Route path="/" element={<HomePage cars={cars} />} />
             <Route
@@ -317,6 +316,7 @@ function App() {
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
                 CarCard={CarCard}
+                carsError={carsError}
               />
             }
             />

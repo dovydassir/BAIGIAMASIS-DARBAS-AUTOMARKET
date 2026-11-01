@@ -1,5 +1,6 @@
 const express = require("express");
 const Car = require("../models/Car");
+const Inquiry = require("../models/Inquiry");
 
 const router = express.Router();
 
@@ -80,20 +81,29 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     try {
-        const car = await Car.findByIdAndDelete(req.params.id);
+        const car = await Car.findById(req.params.id);
 
         if (!car) {
-            return res.status(404).json({ message : "Automobilis nerastas"});
+            return res.status(404).json({ message: "Automobilis nerastas" });
         }
 
-        res.json({ message: "Automobilis ištrintas"});
-    } catch (error) {
-        if (error.name === "CastError") {
-            return res.status(400).json({ message: "Netinkamas automobilio ID" });
+        const inquiry = await Inquiry.findOne({ car: req.params.id });
+
+        if (inquiry) {
+            return res.status(409).json({ message: "Pirmiausia ištrinkite su šiuo automobiliu susijusias užklausas" });
         }
-        res.status(500).json({ message: "Nepavyko ištrinti automobilio" });
-    }
-});
+
+        await Car.findByIdAndDelete(req.params.id);
+        res.json({ message: "Automobilis ištrintas" });
+
+        } catch (error) {
+            if (error.name === "CastError") {
+                return res.status(400).json({ message: "Netinkamas automobilio ID" });
+            }
+            res.status(500).json({ message: "Nepavyko ištrinti automobilio" });
+        }
+    });
+
 
 
 module.exports = router;
